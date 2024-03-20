@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100..900;1,100..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Overpass", sans-serif;
+  }
+}
+body {
+  @apply bg-gray-100;
+}
+.container {
+  @apply max-w-[1500px] mx-auto px-4;
+}
