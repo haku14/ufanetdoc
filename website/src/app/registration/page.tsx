@@ -1,16 +1,14 @@
 import Header from "@/src/components/Header";
-import SignIn from "./SignIn";
-import { getUsers } from "./action";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import RegistrationContainer from "./Registration";
 
-export default async function Login() {
+export default async function Registration() {
   const session = await getServerSession();
 
   if (session) {
     redirect("/");
   }
-
   return (
     <>
       <Header />
@@ -22,7 +20,7 @@ export default async function Login() {
           <p className="mt-4 text-gray-500 text-center">
             Войдите, используя свой логин и пароль или зарегистрируйстесь
           </p>
-          <SignIn />
+          <RegistrationContainer />
         </div>
       </div>
     </>

@@ -11,12 +11,17 @@ const Input: React.FC<Props> = ({
   label,
   search = false,
   className,
+  type,
+  value,
+  onChange,
 }) => {
   return (
     <div className="relative">
       {label && <label>{label}</label>}
       <input
-        type="text"
+        value={value}
+        onChange={onChange}
+        type={type}
         placeholder={placeholder}
         id={id}
         className={twMerge(
