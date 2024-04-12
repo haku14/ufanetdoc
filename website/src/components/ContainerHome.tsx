@@ -1,18 +1,20 @@
 "use client";
 
 import Checkbox from "@/src/components/Checkbox";
-import Document from "@/src/components/Document";
+import DocumentItem from "@/src/components/DocumentItem";
 import Header from "@/src/components/Header";
 import Input from "@/src/components/Input";
 import { signOut } from "next-auth/react";
 import { User } from "../app/page";
-import { RoleType } from "@prisma/client";
+import { Document, RoleType } from "@prisma/client";
+import Link from "next/link";
 
 interface Props {
   user: User;
+  documents: Document[];
 }
 
-const ContainerHome: React.FC<Props> = ({ user }) => {
+const ContainerHome: React.FC<Props> = ({ user, documents }) => {
   return (
     <>
       <Header />
@@ -42,8 +44,8 @@ const ContainerHome: React.FC<Props> = ({ user }) => {
               </div>
             </div>
             <div className="flex-1 flex flex-col gap-5">
-              {DOCUMENTS.map((item, i) => (
-                <Document key={i} title={item.title} date={item.date} />
+              {documents.map((item, i) => (
+                <DocumentItem key={i} title={item.name} date={item.createdAt} />
               ))}
             </div>
             <div>
@@ -53,9 +55,11 @@ const ContainerHome: React.FC<Props> = ({ user }) => {
                     <p className="text-purple-400 text-xl font-bold">
                       Панель управления
                     </p>
-                    <button className="mt-4 text-lg">
-                      + Добавить документ
-                    </button>
+                    <Link href={"/createDocument"}>
+                      <button className="mt-4 text-lg">
+                        + Добавить документ
+                      </button>
+                    </Link>
                   </div>
                 </div>
               )}

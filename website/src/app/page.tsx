@@ -1,8 +1,9 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import ContainerHome from "../components/ContainerHome";
 import { RoleType } from "@prisma/client";
+import { getDocuments } from "./action";
+import { authOptions } from "@/lib/auth";
 
 export type User = {
   login: string;
@@ -12,10 +13,11 @@ export type User = {
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
+  const documents = await getDocuments();
 
   if (!session) {
     redirect("/login");
   }
 
-  return <ContainerHome user={session.user} />;
+  return <ContainerHome user={session.user} documents={documents} />;
 }

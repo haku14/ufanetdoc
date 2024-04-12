@@ -5,7 +5,7 @@ interface Props {
   date: Date;
 }
 
-const Document: React.FC<Props> = ({ title, date }) => {
+const DocumentItem: React.FC<Props> = ({ title, date }) => {
   const months = [
     "января",
     "февраля",
@@ -39,4 +39,4 @@ const Document: React.FC<Props> = ({ title, date }) => {
   );
 };
 
-export default Document;
+export default DocumentItem;

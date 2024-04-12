@@ -1,8 +1,7 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
-import { compareSync } from "bcrypt";
 import { User } from "@prisma/client";
 
 export const authOptions: NextAuthOptions = {
@@ -68,7 +67,3 @@ declare module "next-auth" {
     user: SessionUser;
   }
 }
-
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
