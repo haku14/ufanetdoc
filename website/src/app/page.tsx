@@ -13,11 +13,11 @@ export type User = {
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  const documents = await getDocuments();
+  // const documents = await getDocuments();
 
   if (!session) {
     redirect("/login");
   }
 
-  return <ContainerHome user={session.user} documents={documents} />;
+  return <ContainerHome user={session.user} />;
 }

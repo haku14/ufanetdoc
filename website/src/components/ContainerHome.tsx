@@ -11,10 +11,10 @@ import Link from "next/link";
 
 interface Props {
   user: User;
-  documents: Document[];
+  // documents: Document[];
 }
 
-const ContainerHome: React.FC<Props> = ({ user, documents }) => {
+const ContainerHome: React.FC<Props> = ({ user }) => {
   return (
     <>
       <Header />
@@ -44,9 +44,9 @@ const ContainerHome: React.FC<Props> = ({ user, documents }) => {
               </div>
             </div>
             <div className="flex-1 flex flex-col gap-5">
-              {documents.map((item, i) => (
+              {/* {documents.map((item, i) => (
                 <DocumentItem key={i} title={item.name} date={item.createdAt} />
-              ))}
+              ))} */}
             </div>
             <div>
               {user.role === RoleType.ADMIN && (
