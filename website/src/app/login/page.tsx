@@ -1,6 +1,5 @@
 import Header from "@/src/components/Header";
 import SignIn from "./SignIn";
-import { getUsers } from "./action";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 

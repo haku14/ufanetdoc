@@ -11,10 +11,17 @@ import Link from "next/link";
 
 interface Props {
   user: User;
-  // documents: Document[];
+  documents: Document[];
+  userSelected: string[];
+  userSelecttedName: Document[];
 }
 
-const ContainerHome: React.FC<Props> = ({ user }) => {
+const ContainerHome: React.FC<Props> = ({
+  user,
+  documents,
+  userSelected,
+  userSelecttedName,
+}) => {
   return (
     <>
       <Header />
@@ -44,9 +51,21 @@ const ContainerHome: React.FC<Props> = ({ user }) => {
               </div>
             </div>
             <div className="flex-1 flex flex-col gap-5">
-              {/* {documents.map((item, i) => (
-                <DocumentItem key={i} title={item.name} date={item.createdAt} />
-              ))} */}
+              {documents.map((item, i) => {
+                const select = userSelected.includes(item.id);
+                return (
+                  <DocumentItem
+                    key={i}
+                    title={item.name}
+                    date={item.createdAt}
+                    userId={user.id}
+                    documentId={item.id}
+                    select={select}
+                    //@ts-ignore
+                    file={item.file}
+                  />
+                );
+              })}
             </div>
             <div>
               {user.role === RoleType.ADMIN && (
@@ -60,13 +79,22 @@ const ContainerHome: React.FC<Props> = ({ user }) => {
                         + Добавить документ
                       </button>
                     </Link>
+                    <Link href={"/users"}>
+                      <button className="mt-4 text-lg">Пользователи</button>
+                    </Link>
                   </div>
                 </div>
               )}
               <div className="w-[250px]">
                 <div className="bg-gray-200 rounded-xl p-4">
                   <p className="text-purple-400 text-lg font-bold">Избранное</p>
-                  <p className="mt-4 text-sm">Нет избранного</p>
+                  {userSelecttedName.length ? (
+                    userSelecttedName.map((item, i) => (
+                      <p key={i}>{item.name}</p>
+                    ))
+                  ) : (
+                    <p className="mt-4 text-sm">Нет избранного</p>
+                  )}
                 </div>
               </div>
               <div className="w-[250px] mt-3">

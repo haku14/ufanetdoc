@@ -8,6 +8,7 @@ import Image from "next/image";
 import Input from "@/src/components/Input";
 import React, { FormEvent, useState } from "react";
 import { createDocument } from "./action";
+import { Pane, FileUploader, Alert, FileCard, majorScale } from "evergreen-ui";
 
 interface Props {
   user: User;
@@ -17,19 +18,31 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [numberSop, setNumberSop] = useState<number>();
-  const [file, setFile] = useState<File | null>();
+  const [files, setFiles] = useState<File[]>();
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const _files = Array.from(e.target.files);
+      setFiles(_files);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!file) return;
+    if (!files) return;
 
-    const fileForm = new FormData();
-    fileForm.append("file", file);
+    const convertFilesToFormData = (files: File[]): FormData[] => {
+      return files.map((file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        return formData;
+      });
+    };
 
     try {
       await createDocument({
         name: title,
-        file: fileForm,
+        file: convertFilesToFormData(files),
         description: description,
         oldNumber: numberSop ? numberSop : null,
         filter: ["testfilter"],
@@ -91,11 +104,10 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
             />
             <Input
               type="file"
+              multiple
               label="Документ"
               className="border-none pt-3"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setFile(e.target.files![0])
-              }
+              onChange={handleFileSelected}
             />
             <button
               type="submit"

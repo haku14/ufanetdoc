@@ -3,10 +3,6 @@ import prisma from "./prisma";
 import { v4 } from "uuid";
 import { put } from "@vercel/blob";
 
-export async function getUsers(params: Prisma.UserWhereInput) {
-  return await prisma.user.findMany({ where: params });
-}
-
 export async function getUser(login: string) {
   return await prisma.user.findFirst({ where: { login } });
 }
@@ -31,6 +27,9 @@ export async function saveBlob(formData: FormData) {
   const blob = await put(fileName, file as Blob, {
     access: "public",
   });
-
-  return blob.url;
+  console.log({ name: name, url: blob.url });
+  return {
+    name: realFileName,
+    url: blob.url,
+  };
 }

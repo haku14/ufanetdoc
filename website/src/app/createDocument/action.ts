@@ -3,20 +3,29 @@
 import { Document } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { saveBlob } from "@/lib/queries";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createDocument(
-  data: Omit<Document, "file" | "id" | "createdAt"> & { file: FormData }
+  data: Omit<Document, "file" | "id" | "createdAt"> & { file: FormData[] }
 ) {
+  const fileBlob = await Promise.all(
+    data.file.map(async (item) => {
+      const blob = await saveBlob(item);
+      if (blob) {
+        return blob;
+      }
+      return "error";
+    })
+  );
+
   try {
-    const newFile = await saveBlob(data.file);
-
-    console.log(newFile);
-
     await prisma.document.create({
-      data: { ...data, file: [newFile!] },
+      data: { ...data, file: fileBlob },
     });
-
     console.log("документ загружен");
+    revalidatePath("/");
+    redirect("/");
   } catch (error) {
     console.error("Ошибка при создании документа:", error);
     throw error;

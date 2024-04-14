@@ -18,11 +18,12 @@ model User {
   login    String   @unique
   password String?
   role     RoleType @default(USER)
+  selected String[]
 }
 
 model Document {
   id          String   @id @default(cuid())
-  file        String[]
+  file        Json[]
   name        String
   description String
   filter      String[]

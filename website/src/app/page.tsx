@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import ContainerHome from "../components/ContainerHome";
 import { RoleType } from "@prisma/client";
-import { getDocuments } from "./action";
+import { getDocuments, getSelected } from "./action";
 import { authOptions } from "@/lib/auth";
 
 export type User = {
@@ -13,11 +13,24 @@ export type User = {
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  // const documents = await getDocuments();
 
   if (!session) {
     redirect("/login");
   }
 
-  return <ContainerHome user={session.user} />;
+  const documents = await getDocuments();
+  const userSelected = await getSelected(session?.user.id!);
+
+  const selectedName = documents.filter((item) =>
+    userSelected?.selected.includes(item.id)
+  );
+
+  return (
+    <ContainerHome
+      user={session.user}
+      documents={documents}
+      userSelected={userSelected?.selected!}
+      userSelecttedName={selectedName}
+    />
+  );
 }
