@@ -15,3 +15,7 @@ body {
 .container {
   @apply max-w-[1500px] mx-auto px-4;
 }
+
+button:hover {
+  @apply duration-200 opacity-60;
+}

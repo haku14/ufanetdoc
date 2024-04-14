@@ -28,6 +28,8 @@ model Document {
   description String
   filter      String[]
   oldNumber   Int?
+  departament String[] @default([])
+  category    String[] @default([])
   createdAt   DateTime @default(now())
 }
 

@@ -2,8 +2,6 @@
 
 import { createUser, getUser } from "@/lib/queries";
 import { RoleType } from "@prisma/client";
-import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 export async function checkLogin(login: string, password: string) {
   const checkUser = await getUser(login);
@@ -12,7 +10,12 @@ export async function checkLogin(login: string, password: string) {
     console.log("Пользователь уже существует");
     return false;
   } else {
-    await createUser({ login: login, password: password, role: RoleType.USER });
+    await createUser({
+      login: login,
+      password: password,
+      role: RoleType.USER,
+      selected: [],
+    });
     return true;
   }
 }

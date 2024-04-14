@@ -7,6 +7,7 @@ import { useState } from "react";
 import Checkbox from "@/src/components/Checkbox";
 import Link from "next/link";
 import { checkLogin } from "./action";
+import { toast } from "react-toastify";
 
 interface Props {}
 
@@ -14,22 +15,41 @@ const RegistrationContainer: React.FC<Props> = ({}) => {
   const [data, setData] = useState({
     login: "",
     password: "",
+    repeatPassword: "",
   });
   const router = useRouter();
   return (
     <form
       onSubmit={async (e) => {
         e.preventDefault();
+
+        if (
+          data.login === "" ||
+          data.password === "" ||
+          data.repeatPassword === ""
+        ) {
+          toast.error("Введите пароль и логин");
+          return;
+        }
+
+        if (data.password !== data.repeatPassword) {
+          toast.error("Пароли не совпадают");
+          return;
+        }
+
         try {
           const check = await checkLogin(data.login, data.password);
-          if (check) {
-            await signIn("credentials", {
-              login: data.login,
-              password: data.password,
-              redirect: false,
-            });
-            router.push("/");
+          if (!check) {
+            toast.error("Пользователь уже существует");
+            return;
           }
+          await signIn("credentials", {
+            login: data.login,
+            password: data.password,
+            redirect: false,
+          });
+          router.push("/");
+          toast.success("Добро пожаловать!");
         } catch (error) {
           console.error(error);
         }
@@ -54,16 +74,26 @@ const RegistrationContainer: React.FC<Props> = ({}) => {
           setData((p) => ({ ...p, login: e.target.value }))
         }
       />
-      <Input
-        label="Пароль"
-        placeholder="Введите пароль"
-        type="password"
-        value={data.password}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setData((p) => ({ ...p, password: e.target.value }))
-        }
-      />
-      <Checkbox title="Запомнить меня" />
+      <div>
+        <Input
+          label="Пароль"
+          placeholder="Введите пароль"
+          type="password"
+          value={data.password}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setData((p) => ({ ...p, password: e.target.value }))
+          }
+        />
+        <Input
+          className="mt-3"
+          placeholder="Повторите пароль"
+          type="password"
+          value={data.repeatPassword}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setData((p) => ({ ...p, repeatPassword: e.target.value }))
+          }
+        />
+      </div>
       <button
         type="submit"
         className="w-full p-2 rounded-xl border-orange-400 border text-orange-400"

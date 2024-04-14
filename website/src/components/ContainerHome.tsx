@@ -8,6 +8,8 @@ import { signOut } from "next-auth/react";
 import { User } from "../app/page";
 import { Document, RoleType } from "@prisma/client";
 import Link from "next/link";
+import React, { useEffect, useMemo, useState } from "react";
+import { categories, departaments } from "@/lib/constans";
 
 interface Props {
   user: User;
@@ -22,6 +24,40 @@ const ContainerHome: React.FC<Props> = ({
   userSelected,
   userSelecttedName,
 }) => {
+  const [departament, setDepartament] = useState<string[]>([]);
+  const [category, setCategory] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
+
+  const filterDocuments = useMemo(() => {
+    let filter = documents;
+
+    if (search !== "") {
+      filter = filter.filter((item) =>
+        item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+      );
+    }
+
+    if (category.length > 0) {
+      filter = filter.filter((item) =>
+        item.category.some((cat) => category.includes(cat))
+      );
+    }
+
+    if (departament.length > 0) {
+      filter = filter.filter((item) =>
+        item.departament.some((cat) => departament.includes(cat))
+      );
+    }
+
+    return filter;
+  }, [search, category, documents, departament]);
+
+  const clearFilter = () => {
+    setSearch("");
+    setCategory([]);
+    setDepartament([]);
+  };
+
   return (
     <>
       <Header />
@@ -29,43 +65,67 @@ const ContainerHome: React.FC<Props> = ({
         <div className="container">
           <div className="mt-6 flex gap-4">
             <div className="w-[300px] max-lg:w-[220px]">
-              <Input placeholder="Поиск" search />
-              <button className="text-orange-400 text-sm mt-3">
+              <Input
+                placeholder="Поиск"
+                search
+                value={search}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearch(e.target.value)
+                }
+              />
+              <button
+                onClick={() => clearFilter()}
+                className="text-orange-400 text-sm mt-3"
+              >
                 Сброс фильтров
               </button>
               <p className="text-xl text-orange-400 mt-6 font-semibold">
                 Служба отдел
               </p>
               <div className="mt-4 flex flex-col gap-3">
-                <Checkbox title="Сервисная служба (114)" />
-                <Checkbox title="РСС (24)" />
-                <Checkbox title="Служба проектирования (1)" />
+                {departaments.map((item, i) => (
+                  <Checkbox
+                    key={i}
+                    title={item}
+                    setSelect={setDepartament}
+                    select={departament}
+                  />
+                ))}
               </div>
               <p className="text-xl text-orange-400 mt-6 font-semibold">
                 Категория
               </p>
               <div className="mt-4 flex flex-col gap-3">
-                <Checkbox title="Интернет (55)" />
-                <Checkbox title="ДРС (34)" />
-                <Checkbox title="КТВ (25)" />
+                {categories.map((item, i) => (
+                  <Checkbox
+                    key={i}
+                    title={item}
+                    setSelect={setCategory}
+                    select={category}
+                  />
+                ))}
               </div>
             </div>
             <div className="flex-1 flex flex-col gap-5">
-              {documents.map((item, i) => {
-                const select = userSelected.includes(item.id);
-                return (
-                  <DocumentItem
-                    key={i}
-                    title={item.name}
-                    date={item.createdAt}
-                    userId={user.id}
-                    documentId={item.id}
-                    select={select}
-                    //@ts-ignore
-                    file={item.file}
-                  />
-                );
-              })}
+              {filterDocuments.length ? (
+                filterDocuments.map((item, i) => {
+                  const select = userSelected.includes(item.id);
+                  return (
+                    <DocumentItem
+                      key={i}
+                      title={item.name}
+                      date={item.createdAt}
+                      userId={user.id}
+                      documentId={item.id}
+                      select={select}
+                      //@ts-ignore
+                      file={item.file}
+                    />
+                  );
+                })
+              ) : (
+                <p>Документов не нашлось</p>
+              )}
             </div>
             <div>
               {user.role === RoleType.ADMIN && (
@@ -90,7 +150,13 @@ const ContainerHome: React.FC<Props> = ({
                   <p className="text-purple-400 text-lg font-bold">Избранное</p>
                   {userSelecttedName.length ? (
                     userSelecttedName.map((item, i) => (
-                      <p key={i}>{item.name}</p>
+                      <button
+                        key={i}
+                        onClick={() => setSearch(item.name)}
+                        className="w-full text-left p-1"
+                      >
+                        {item.name}
+                      </button>
                     ))
                   ) : (
                     <p className="mt-4 text-sm">Нет избранного</p>

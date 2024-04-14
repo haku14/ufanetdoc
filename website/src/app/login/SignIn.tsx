@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Checkbox from "@/src/components/Checkbox";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const [data, setData] = useState({
@@ -18,6 +19,10 @@ const SignIn = () => {
     <form
       onSubmit={async (e) => {
         e.preventDefault();
+        if (data.login === "" || data.password === "") {
+          toast.error("Введите пароль и логин");
+          return;
+        }
         try {
           const res = await signIn("credentials", {
             login: data.login,
@@ -26,9 +31,11 @@ const SignIn = () => {
           });
 
           if (res?.error) {
+            toast.error("Введен неправильный пароль или логин");
             throw res.error;
           }
           router.push("/");
+          toast.success("Добро пожаловать!");
         } catch (error) {
           console.error(error);
         }
@@ -62,7 +69,7 @@ const SignIn = () => {
           setData((p) => ({ ...p, password: e.target.value }))
         }
       />
-      <Checkbox title="Запомнить меня" />
+      {/* <Checkbox title="Запомнить меня" /> */}
       <button
         type="submit"
         className="w-full p-2 rounded-xl border-orange-400 border text-orange-400"

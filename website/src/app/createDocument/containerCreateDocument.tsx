@@ -8,7 +8,8 @@ import Image from "next/image";
 import Input from "@/src/components/Input";
 import React, { FormEvent, useState } from "react";
 import { createDocument } from "./action";
-import { Pane, FileUploader, Alert, FileCard, majorScale } from "evergreen-ui";
+import { categories, departaments } from "@/lib/constans";
+import Checkbox from "@/src/components/Checkbox";
 
 interface Props {
   user: User;
@@ -19,6 +20,8 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
   const [description, setDescription] = useState("");
   const [numberSop, setNumberSop] = useState<number>();
   const [files, setFiles] = useState<File[]>();
+  const [departament, setDepartament] = useState<string[]>([]);
+  const [category, setCategory] = useState<string[]>([]);
 
   const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -46,6 +49,8 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
         description: description,
         oldNumber: numberSop ? numberSop : null,
         filter: ["testfilter"],
+        departament: departament,
+        category: category,
       });
     } catch (error) {
       console.log("error " + error);
@@ -60,7 +65,7 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
           самая хорошая новость
         </h1>
       ) : (
-        <div className="container">
+        <div className="container pb-10">
           <Link className="flex items-center gap-1 mt-3" href={"/"}>
             <Image
               src={"/icons/arrow.svg"}
@@ -109,6 +114,32 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
               className="border-none pt-3"
               onChange={handleFileSelected}
             />
+            <div>
+              <p>Служба, отдел</p>
+              <div className="flex flex-col gap-3 mt-4">
+                {departaments.map((item, i) => (
+                  <Checkbox
+                    key={i}
+                    title={item}
+                    setSelect={setDepartament}
+                    select={departament}
+                  />
+                ))}
+              </div>
+            </div>
+            <div>
+              <p>Категория</p>
+              <div className="flex flex-col gap-3 mt-4">
+                {categories.map((item, i) => (
+                  <Checkbox
+                    key={i}
+                    title={item}
+                    setSelect={setCategory}
+                    select={category}
+                  />
+                ))}
+              </div>
+            </div>
             <button
               type="submit"
               className="bg-orange-400 p-2 text-white rounded-xl"
