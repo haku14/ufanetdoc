@@ -61,8 +61,7 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
       <Header />
       {user.role === RoleType.USER ? (
         <h1 className="text-center text-3xl font-bold text-orange-400">
-          Вы пытаетесь влезть туда, куда вам нельзя. К вам уже едет омон и это
-          самая хорошая новость
+          Вы пытаетесь влезть туда, куда вам нельзя.
         </h1>
       ) : (
         <div className="container pb-10">

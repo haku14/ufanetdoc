@@ -55,7 +55,9 @@ const ContainerUsers: React.FC<Props> = ({ user, users }) => {
                   <p className="text-orange-400 text-xl font-medium">
                     {item.login}
                   </p>
-                  <p>{item.role === RoleType.ADMIN ? "Бог" : "Чел"}</p>
+                  <p>
+                    {item.role === RoleType.ADMIN ? "Админ" : "Пользователь"}
+                  </p>
                 </div>
                 {item.role === RoleType.USER && (
                   <div className="flex items-center gap-3">
@@ -64,7 +66,7 @@ const ContainerUsers: React.FC<Props> = ({ user, users }) => {
                     </button>
                     |
                     <button onClick={() => handleDeleteUser(item.id)}>
-                      Бан
+                      Удалить
                     </button>
                   </div>
                 )}
