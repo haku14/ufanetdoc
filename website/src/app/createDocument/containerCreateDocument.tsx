@@ -10,6 +10,7 @@ import React, { FormEvent, useState } from "react";
 import { createDocument } from "./action";
 import { categories, departaments } from "@/lib/constans";
 import Checkbox from "@/src/components/Checkbox";
+import { twMerge } from "tailwind-merge";
 
 interface Props {
   user: User;
@@ -23,6 +24,7 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
   const [preview, setPriview] = useState<File>();
   const [departament, setDepartament] = useState<string[]>([]);
   const [category, setCategory] = useState<string[]>([]);
+  const [disabled, setDisabled] = useState(false);
 
   const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -57,6 +59,7 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
     };
 
     try {
+      setDisabled(true);
       await createDocument({
         name: title,
         file: convertFilesToFormData(files),
@@ -164,9 +167,12 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
             </div>
             <button
               type="submit"
-              className="bg-orange-400 p-2 text-white rounded-xl"
+              className={twMerge(
+                "bg-orange-400 p-2 text-white rounded-xl",
+                disabled && "pointer-events-none"
+              )}
             >
-              Загрузить документ
+              {disabled ? "Отправка..." : "Загрузить документ"}
             </button>
           </form>
         </div>
