@@ -35,12 +35,11 @@ const DocumentItem: React.FC<Props> = ({
     }
   };
   return (
-    <Link
-      href={`/document/${documentId}`}
-      className="w-full p-5 bg-gray-200 rounded-xl duration-300 flex justify-between gap-5 items-center"
-    >
+    <div className="w-full p-5 bg-gray-200 rounded-xl duration-300 flex justify-between gap-5 items-center">
       <div className="w-full">
-        <p className="text-2xl font-medium text-orange-400">{title}</p>
+        <Link href={`/document/${documentId}`}>
+          <p className="text-2xl font-medium text-orange-400">{title}</p>
+        </Link>
         <div className="flex gap-2 items-center">
           <Image
             src={"/icons/calendar.svg"}
@@ -64,7 +63,7 @@ const DocumentItem: React.FC<Props> = ({
       <button onClick={handleClick} className="w-[25px] h-[25px] mr-5">
         <Like fill={like ? "#ff9494" : "#e5e7eb"} />
       </button>
-    </Link>
+    </div>
   );
 };
 
