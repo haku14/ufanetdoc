@@ -24,6 +24,7 @@ model User {
 model Document {
   id          String   @id @default(cuid())
   file        Json[]
+  preview     String?
   name        String
   description String
   filter      String[]

@@ -20,6 +20,7 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
   const [description, setDescription] = useState("");
   const [numberSop, setNumberSop] = useState<number>();
   const [files, setFiles] = useState<File[]>();
+  const [preview, setPriview] = useState<File>();
   const [departament, setDepartament] = useState<string[]>([]);
   const [category, setCategory] = useState<string[]>([]);
 
@@ -27,6 +28,13 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
     if (e.target.files) {
       const _files = Array.from(e.target.files);
       setFiles(_files);
+    }
+  };
+
+  const handlePreviewSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const _files = Array.from(e.target.files);
+      setPriview(_files[0]);
     }
   };
 
@@ -42,6 +50,12 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
       });
     };
 
+    const convertPreviewToFormData = (file: File): FormData => {
+      const formData = new FormData();
+      formData.append("file", file);
+      return formData;
+    };
+
     try {
       await createDocument({
         name: title,
@@ -51,6 +65,7 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
         filter: ["testfilter"],
         departament: departament,
         category: category,
+        preview: convertPreviewToFormData(preview!),
       });
     } catch (error) {
       console.log("error " + error);
@@ -112,6 +127,14 @@ const ContainerCreateDocument: React.FC<Props> = ({ user }) => {
               label="Документ"
               className="border-none pt-3"
               onChange={handleFileSelected}
+            />
+            <Input
+              type="file"
+              multiple
+              label="Превью документа"
+              className="border-none pt-3"
+              onChange={handlePreviewSelected}
+              accept="image/png, image/jpeg, image/gif"
             />
             <div>
               <p>Служба, отдел</p>

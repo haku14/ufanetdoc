@@ -7,7 +7,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createDocument(
-  data: Omit<Document, "file" | "id" | "createdAt"> & { file: FormData[] }
+  data: Omit<Document, "file" | "id" | "createdAt" | "preview"> & {
+    file: FormData[];
+    preview: FormData;
+  }
 ) {
   const fileBlob = await Promise.all(
     data.file.map(async (item) => {
@@ -19,9 +22,11 @@ export async function createDocument(
     })
   );
 
+  const previewBlob = await saveBlob(data.preview);
+
   try {
     await prisma.document.create({
-      data: { ...data, file: fileBlob },
+      data: { ...data, file: fileBlob, preview: previewBlob!.url },
     });
     console.log("документ загружен");
     revalidatePath("/");

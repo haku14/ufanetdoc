@@ -15,11 +15,13 @@ const Input: React.FC<Props> = ({
   value,
   onChange,
   multiple,
+  accept,
 }) => {
   return (
     <div className="relative">
       {label && <label>{label}</label>}
       <input
+        accept={accept}
         multiple={multiple}
         value={value}
         onChange={onChange}
